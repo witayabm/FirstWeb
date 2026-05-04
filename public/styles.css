@@ -288,22 +288,24 @@ dd {
 .dashboard-price-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
   min-height: 260px;
   padding: 26px;
 }
 
 .price-label {
   color: var(--muted);
+  font-size: 2.70rem;
   font-weight: 900;
 }
 
 .dashboard-price-row {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: baseline;
   flex-wrap: wrap;
-  margin: 30px 0 12px;
+  margin: 0 0 8px;
 }
 
 .dashboard-price-row strong {
