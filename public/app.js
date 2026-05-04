@@ -5,6 +5,7 @@ const elements = {
   loadButton: document.querySelector("#loadDashboardButton"),
   quickButtons: document.querySelectorAll("[data-dashboard-symbol]"),
   status: document.querySelector("#dashboardStatus"),
+  results: document.querySelector("#dashboardResults"),
   logo: document.querySelector("#companyLogo"),
   exchangeLabel: document.querySelector("#companyExchange"),
   companyName: document.querySelector("#companyName"),
@@ -232,6 +233,10 @@ function setLoading(isLoading) {
   elements.quickButtons.forEach((button) => {
     button.disabled = isLoading;
   });
+}
+
+function setResultsVisible(isVisible) {
+  elements.results.hidden = !isVisible;
 }
 
 async function fetchJson(path) {
@@ -673,6 +678,7 @@ async function loadDashboard(symbol) {
   const currentRequestId = requestId + 1;
   requestId = currentRequestId;
   setActiveSymbol(normalizedSymbol);
+  setResultsVisible(true);
   setLoading(true);
   setStatus(`Loading ${normalizedSymbol}...`);
 
@@ -773,4 +779,5 @@ window.addEventListener("resize", () => {
 const initialSymbol = new URLSearchParams(window.location.search).get("symbol");
 renderSymbolOptions();
 setActiveSymbol(initialSymbol || elements.input.value);
+setResultsVisible(false);
 setStatus(`Ready to load ${activeSymbol}. Click Load to fetch data.`);
