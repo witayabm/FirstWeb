@@ -549,9 +549,7 @@ dd {
 }
 
 @media (max-width: 560px) {
-  .dashboard-search-row,
-  .price-table-head,
-  .price-table-row {
+  .dashboard-search-row {
     grid-template-columns: 1fr;
   }
 
@@ -563,6 +561,10 @@ dd {
   .dashboard-price-card,
   .dashboard-panel {
     padding: 18px;
+  }
+
+  .recent-prices-panel {
+    padding: 14px;
   }
 
   .company-identity {
@@ -578,9 +580,30 @@ dd {
     min-height: 280px;
   }
 
+  .price-table-head,
+  .price-table-row {
+    grid-template-columns: minmax(76px, 1fr) minmax(54px, 0.72fr) minmax(100px, 1.18fr);
+    gap: 6px;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .price-table-head {
+    font-size: 0.62rem;
+  }
+
+  .price-table-row {
+    font-size: 0.72rem;
+  }
+
   .price-table-head span:nth-child(n + 2),
   .price-table-row span:nth-child(n + 2) {
-    justify-self: start;
-    text-align: left;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .price-table-row .positive,
+  .price-table-row .negative {
+    padding: 3px 6px;
   }
 }
