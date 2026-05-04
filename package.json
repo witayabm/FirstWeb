@@ -1,0 +1,18 @@
+{
+  "name": "sp500-stock-dashboard",
+  "version": "1.0.0",
+  "description": "Simple Node.js stock dashboard backed by Financial Modeling Prep data.",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm run backend",
+    "start:docker": "node docker-entrypoint.js",
+    "backend": "node server.js",
+    "frontend": "node frontend-server.js",
+    "dev:backend": "node server.js",
+    "dev:frontend": "node frontend-server.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}
