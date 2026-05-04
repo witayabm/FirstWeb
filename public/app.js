@@ -1,6 +1,7 @@
 const elements = {
   form: document.querySelector("#dashboardSearchForm"),
   input: document.querySelector("#dashboardSymbol"),
+  symbolSelect: document.querySelector("#dashboardSymbolSelect"),
   loadButton: document.querySelector("#loadDashboardButton"),
   quickButtons: document.querySelectorAll("[data-dashboard-symbol]"),
   status: document.querySelector("#dashboardStatus"),
@@ -44,10 +45,101 @@ const integer = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0
 });
 
+const STOCK_SYMBOLS = [
+  "AAPL",
+  "TSLA",
+  "AMZN",
+  "MSFT",
+  "NVDA",
+  "GOOGL",
+  "META",
+  "NFLX",
+  "JPM",
+  "V",
+  "BAC",
+  "PYPL",
+  "DIS",
+  "T",
+  "PFE",
+  "COST",
+  "INTC",
+  "KO",
+  "TGT",
+  "NKE",
+  "SPY",
+  "BA",
+  "BABA",
+  "XOM",
+  "WMT",
+  "GE",
+  "CSCO",
+  "VZ",
+  "JNJ",
+  "CVX",
+  "PLTR",
+  "SQ",
+  "SHOP",
+  "SBUX",
+  "SOFI",
+  "HOOD",
+  "RBLX",
+  "SNAP",
+  "AMD",
+  "UBER",
+  "FDX",
+  "ABBV",
+  "ETSY",
+  "MRNA",
+  "LMT",
+  "GM",
+  "F",
+  "LCID",
+  "CCL",
+  "DAL",
+  "UAL",
+  "AAL",
+  "TSM",
+  "SONY",
+  "ET",
+  "MRO",
+  "COIN",
+  "RIVN",
+  "RIOT",
+  "CPRX",
+  "VWO",
+  "SPYG",
+  "NOK",
+  "ROKU",
+  "VIAC",
+  "ATVI",
+  "BIDU",
+  "DOCU",
+  "ZM",
+  "PINS",
+  "TLRY",
+  "WBA",
+  "MGM",
+  "NIO",
+  "C",
+  "GS",
+  "WFC",
+  "ADBE",
+  "PEP",
+  "UNH",
+  "CARR",
+  "HCA",
+  "TWTR",
+  "BILI",
+  "SIRI",
+  "FUBO",
+  "RKT"
+];
+
 let activeSymbol = "AAPL";
 let latestPrices = [];
 let requestId = 0;
 const RECENT_PRICE_DAYS = 14;
+const CANDLESTICK_DAYS = 14;
 let chartState = {
   candleSlot: 0,
   points: [],
@@ -136,6 +228,7 @@ function setStatus(message) {
 function setLoading(isLoading) {
   elements.loadButton.disabled = isLoading;
   elements.loadButton.textContent = isLoading ? "Loading" : "Load";
+  elements.symbolSelect.disabled = isLoading;
   elements.quickButtons.forEach((button) => {
     button.disabled = isLoading;
   });
@@ -179,8 +272,23 @@ function getPriceChange(prices) {
 function setActiveSymbol(symbol) {
   activeSymbol = normalizeSymbol(symbol);
   elements.input.value = activeSymbol;
+  elements.symbolSelect.value = STOCK_SYMBOLS.includes(activeSymbol) ? activeSymbol : "";
   elements.quickButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.dashboardSymbol === activeSymbol);
+  });
+}
+
+function renderSymbolOptions() {
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select a stock";
+  elements.symbolSelect.append(placeholder);
+
+  STOCK_SYMBOLS.forEach((symbol) => {
+    const option = document.createElement("option");
+    option.value = symbol;
+    option.textContent = symbol;
+    elements.symbolSelect.append(option);
   });
 }
 
@@ -395,6 +503,7 @@ function drawChart(symbol, prices, hoverIndex = null) {
   context.clearRect(0, 0, width, height);
 
   const points = prices
+    .slice(0, CANDLESTICK_DAYS)
     .map((item) => {
       const close = toFiniteNumber(item.close);
       const open = toFiniteNumber(item.open) ?? close;
@@ -571,7 +680,7 @@ async function loadDashboard(symbol) {
     const profileParams = new URLSearchParams({ symbol: normalizedSymbol });
     const historyParams = new URLSearchParams({
       symbol: normalizedSymbol,
-      limit: "30"
+      limit: String(CANDLESTICK_DAYS)
     });
     const [profileData, historyData] = await Promise.all([
       fetchJson(`/api/fmp/profile?${profileParams}`),
@@ -632,6 +741,15 @@ elements.quickButtons.forEach((button) => {
   });
 });
 
+elements.symbolSelect.addEventListener("change", () => {
+  if (!elements.symbolSelect.value) {
+    return;
+  }
+
+  setActiveSymbol(elements.symbolSelect.value);
+  setStatus(`Ready to load ${activeSymbol}. Click Load to fetch data.`);
+});
+
 elements.chart.addEventListener("mousemove", (event) => {
   const hoverIndex = getHoverIndex(event);
   const chartSymbol = chartState.symbol || activeSymbol;
@@ -653,5 +771,6 @@ window.addEventListener("resize", () => {
 });
 
 const initialSymbol = new URLSearchParams(window.location.search).get("symbol");
+renderSymbolOptions();
 setActiveSymbol(initialSymbol || elements.input.value);
 setStatus(`Ready to load ${activeSymbol}. Click Load to fetch data.`);

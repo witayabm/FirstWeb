@@ -119,6 +119,7 @@ dd {
 }
 
 .dashboard-search input,
+.dashboard-symbol-select,
 .dashboard-search button,
 .dashboard-symbols button {
   min-height: 44px;
@@ -151,7 +152,8 @@ dd {
   gap: 8px;
 }
 
-.dashboard-symbols button {
+.dashboard-symbols button,
+.dashboard-symbol-select {
   min-width: 72px;
   border: 1px solid var(--line);
   padding: 8px 12px;
@@ -161,6 +163,11 @@ dd {
   font-weight: 900;
 }
 
+.dashboard-symbol-select {
+  width: 90x;
+  padding-right: 22px;
+}
+
 .dashboard-symbols button.active {
   border-color: var(--green);
   background: var(--green);
@@ -168,6 +175,7 @@ dd {
 }
 
 .dashboard-search button:disabled,
+.dashboard-symbol-select:disabled,
 .dashboard-symbols button:disabled {
   cursor: wait;
   opacity: 0.7;

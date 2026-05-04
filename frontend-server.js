@@ -35,6 +35,14 @@ function sendConfig(res) {
   res.end(`window.API_BASE_URL = ${JSON.stringify(API_BASE_URL)};`);
 }
 
+function redirectToIndex(res) {
+  res.writeHead(302, {
+    Location: "/",
+    "Cache-Control": "no-store"
+  });
+  res.end();
+}
+
 async function proxyApiRequest(req, res, requestUrl) {
   const targetUrl = new URL(`${requestUrl.pathname}${requestUrl.search}`, API_PROXY_URL);
 
@@ -117,6 +125,14 @@ const server = http.createServer((req, res) => {
 
   if (requestUrl.pathname === "/config.js") {
     sendConfig(res);
+    return;
+  }
+
+  if (
+    requestUrl.pathname === "/dashboard" ||
+    requestUrl.pathname === "/dashboard.html"
+  ) {
+    redirectToIndex(res);
     return;
   }
 
