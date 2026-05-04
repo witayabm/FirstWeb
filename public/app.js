@@ -274,10 +274,12 @@ function getPriceChange(prices) {
   return { change: null, percent: null };
 }
 
-function setActiveSymbol(symbol) {
+function setActiveSymbol(symbol, options = {}) {
+  const { syncSelect = true } = options;
   activeSymbol = normalizeSymbol(symbol);
   elements.input.value = activeSymbol;
-  elements.symbolSelect.value = STOCK_SYMBOLS.includes(activeSymbol) ? activeSymbol : "";
+  elements.symbolSelect.value =
+    syncSelect && STOCK_SYMBOLS.includes(activeSymbol) ? activeSymbol : "";
   elements.quickButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.dashboardSymbol === activeSymbol);
   });
@@ -286,7 +288,7 @@ function setActiveSymbol(symbol) {
 function renderSymbolOptions() {
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = "Select a stock";
+  placeholder.textContent = "Select Stock";
   elements.symbolSelect.append(placeholder);
 
   STOCK_SYMBOLS.forEach((symbol) => {
@@ -742,7 +744,7 @@ elements.form.addEventListener("submit", (event) => {
 
 elements.quickButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    setActiveSymbol(button.dataset.dashboardSymbol);
+    setActiveSymbol(button.dataset.dashboardSymbol, { syncSelect: false });
     setStatus(`Ready to load ${activeSymbol}. Click Load to fetch data.`);
   });
 });
@@ -778,6 +780,6 @@ window.addEventListener("resize", () => {
 
 const initialSymbol = new URLSearchParams(window.location.search).get("symbol");
 renderSymbolOptions();
-setActiveSymbol(initialSymbol || elements.input.value);
+setActiveSymbol(initialSymbol || elements.input.value, { syncSelect: false });
 setResultsVisible(false);
 setStatus(`Ready to load ${activeSymbol}. Click Load to fetch data.`);

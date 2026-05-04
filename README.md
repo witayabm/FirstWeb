@@ -139,6 +139,44 @@ git commit -m "Describe your change"
 git push
 ```
 
+## วิธี Deploy บน Render จาก GitHub
+
+โปรเจกต์นี้มี `Dockerfile` แล้ว จึงสามารถ deploy บน Render เป็น Web Service เดียวได้ โดย Docker จะรันทั้ง frontend และ backend ให้พร้อมกัน
+
+ก่อน deploy ให้ push โค้ดขึ้น GitHub ให้เรียบร้อย:
+
+```cmd
+git status
+git add .
+git commit -m "Prepare Render deployment"
+git push
+```
+
+จากนั้นทำใน Render:
+
+1. เข้า `https://render.com` และเปิด Dashboard
+2. กด `New` > `Web Service`
+3. เลือก `Git Provider` แล้วเชื่อม GitHub ถ้ายังไม่เคยเชื่อม
+4. เลือก repository ของโปรเจกต์นี้
+5. ตั้งค่า service:
+   - Language: `Docker`
+   - Branch: `main`
+   - Root Directory: เว้นว่างไว้ ถ้า `Dockerfile` อยู่ที่ root ของโปรเจกต์
+6. เพิ่ม Environment Variables:
+   - `FMP_API_KEY=your_api_key_here`
+   - `PORT=3000`
+   - `BACKEND_PORT=3001`
+   - `API_PROXY_URL=http://127.0.0.1:3001`
+7. กด `Create Web Service` แล้วรอ Render build และ deploy
+
+เมื่อ deploy เสร็จ Render จะให้ URL รูปแบบนี้:
+
+```text
+https://your-service-name.onrender.com
+```
+
+หลังจากนี้ ถ้าแก้โค้ดและ `git push` ขึ้น branch `main` Render จะ deploy เวอร์ชันใหม่ให้อัตโนมัติ
+
 ## โครงสร้างไฟล์
 
 ```text

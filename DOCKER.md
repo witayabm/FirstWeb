@@ -10,18 +10,13 @@ This project can run as one Docker container.
 ## Build
 
 ```sh
-docker build -t sp500-stock-dashboard .
+docker build -t my-app .
 ```
 
 ## Run
 
 ```sh
-docker run -d \
-  --name sp500-stock-dashboard \
-  -p 3000:3000 \
-  -e FMP_API_KEY=your_api_key_here \
-  --restart unless-stopped \
-  sp500-stock-dashboard
+docker run -p 3000:3000 my-app
 ```
 
 Open:
